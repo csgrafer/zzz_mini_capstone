@@ -1,6 +1,7 @@
 class Api::ProductsController < ApplicationController
   def index
-    @product = Product.first
+    the_id = params[:product_id]
+    @product = Product.find_by(id: the_id)
     render 'index.json.jbuilder'
   end
 
