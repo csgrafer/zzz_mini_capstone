@@ -12,8 +12,11 @@ class Api::ProductsController < ApplicationController
 
   def create
     @product = Product.new(id: params[:input_id], name: params[:input_name], price: params[:input_price], description: params[:input_description], image_url: params[:input_image_url] )
-    @product.save
-    render 'show.json.jbuilder'
+    if @product.save
+      render 'show.json.jbuilder'
+    else
+      render 'errors.json.jbuilder', status: :unprocessible_entity
+    end
   end
 
   def update
@@ -24,8 +27,12 @@ class Api::ProductsController < ApplicationController
     @product.price = params[:price]
     @product.description = params[:description]
     @product.image_url = params[:image_url]
-    @product.save
-    render 'show.json.jbuilder'
+    
+    if @product.save
+      render 'show.json.jbuilder'
+    else
+      render 'errors.json.jbuilder', status: :unprocessible_entity
+    end
   end
 
   def destroy
