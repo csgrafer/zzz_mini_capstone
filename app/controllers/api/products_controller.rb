@@ -1,17 +1,34 @@
 class Api::ProductsController < ApplicationController
   def index
-    @products = Product.all
+    if params[:search] 
+      @products = Product.where("name iLIKE ?", "%#{params[:search]}%")
+    else
+      @products = Product.all
+    end
+
+    if params[:discount] == "true"
+      @products = @products.where("price < ?", 10)
+    end
+
+    if params[:sort] && params[:sort_order]
+      @products = @products.order(params[:sort] => params[:sort_order])
+    end
     render 'index.json.jbuilder'
   end
 
   def show
-    the_id = params[:id]
-    @product = Product.find_by(id: the_id)
+    @product = Product.find(params[:id])
     render 'show.json.jbuilder'
   end
 
   def create
-    @product = Product.new(id: params[:input_id], name: params[:input_name], price: params[:input_price], description: params[:input_description], image_url: params[:input_image_url] )
+    @product = Product.new(
+      id: params[:input_id],
+      name: params[:input_name],
+      price: params[:input_price],
+      description: params[:input_description],
+      image_url: params[:input_image_url]
+      )
     if @product.save
       render 'show.json.jbuilder'
     else
@@ -20,8 +37,7 @@ class Api::ProductsController < ApplicationController
   end
 
   def update
-    the_id = params[:id]
-    @product = Product.find_by(id: the_id)
+    @product = Product.find(params[:id])
     @product.id = params[:id]
     @product.name = params[:name]
     @product.price = params[:price]
@@ -36,8 +52,7 @@ class Api::ProductsController < ApplicationController
   end
 
   def destroy
-    the_id = params[:id]
-    @product = Product.find_by(id: the_id)
+    @product = Product.find(params[:id])
     @product.destroy
     render 'destroy.json.jbuilder'
   end
