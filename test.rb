@@ -46,3 +46,8 @@
 
 # p array_match([3,2,3,4,3])
 
+# hsh = { at_at: "att", attr: "attra", att: "attr" }
+# p hsh.keys.map(&:to_s).sort_by(&:length)
+
+
+-> (a) {p a}["Hello world"]
